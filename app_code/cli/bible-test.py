@@ -100,19 +100,21 @@ class BibleTest(object):
         print('* Validating the generated HTML...', end=' ')
         validator_url = 'https://validator.nu/?out=json&charset=UTF-8&parser=html5&doc={0}'.format(
             urllib.quote(live_url))
+        friendly_url = 'https://validator.nu/?charset=UTF-8&parser=html5&doc={0}'.format(
+            urllib.quote(live_url))
         validator_results = json.loads(get_url(validator_url))
 
         html_warnings = [m for m in validator_results['messages'] if m['type'] == 'info' and m['subType'] == 'warning']
         if html_warnings:
             for html_warning in html_warnings:
                 self.warnings.append('HTML Validation Warning: {0}'.format(html_warning['message']))
-            self.warnings.append('For details check {0}'.format(validator_url))
+            self.warnings.append('For details check {0}'.format(friendly_url))
 
         html_errors = [m for m in validator_results['messages'] if m['type'] == 'error']
         if html_errors:
             for html_error in html_errors:
                 self.errors.append('HTML Validation Error: {0}'.format(html_error['message']))
-            self.errors.append('For details check {0}'.format(validator_url))
+            self.errors.append('For details check {0}'.format(friendly_url))
             print('')
             return False
         print('finished.')
